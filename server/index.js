@@ -6,6 +6,8 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const propertyRoutes = require('./routes/propertyRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
+const leadRoutes = require('./routes/leadRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 dotenv.config();
 connectDB();
@@ -19,6 +21,8 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/properties', propertyRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/leads', leadRoutes);
+app.use('/api/payments', paymentRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'Server is running' });
