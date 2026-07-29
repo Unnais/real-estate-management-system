@@ -7,9 +7,11 @@ const {
   updateProperty,
   deleteProperty,
   updatePropertyStatus,
+  searchProperties,
 } = require('../controllers/propertyController');
 const { requireAuth, requireRole } = require('../middleware/authMiddleware');
 
+router.get('/search', searchProperties);
 router.get('/', getProperties);
 router.get('/:id', getPropertyById);
 router.post('/', requireAuth, requireRole('owner', 'agent'), createProperty);

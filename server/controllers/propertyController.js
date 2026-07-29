@@ -1,5 +1,5 @@
 const Property = require('../models/Property');
-const { createPropertySchema, updatePropertySchema } = require('../validators/propertyValidator');
+const { createPropertySchema, updatePropertySchema, searchPropertySchema } = require('../validators/propertyValidator');
 
 const createProperty = async (req, res) => {
   try {
@@ -120,6 +120,52 @@ const updatePropertyStatus = async (req, res) => {
   }
 };
 
+const searchProperties = async (req, res) => {
+  try {
+    const { error, value } = searchPropertySchema.validate(req.query);
+    if (error) {
+      return res.status(400).json({ success: false, error: error.details[0].message });
+    }
+
+    if (value.minPrice && value.maxPrice && value.minPrice > value.maxPrice) {
+      return res.status(400).json({ success: false, error: 'minPrice cannot be greater than maxPrice' });
+    }
+
+    const filter = { status: 'approved' };
+
+    if (value.keyword) {
+      filter.title = { $regex: value.keyword, $options: 'i' };
+    }
+    if (value.type) {
+      filter.type = value.type;
+    }
+    if (value.minPrice || value.maxPrice) {
+      filter.price = {};
+      if (value.minPrice) filter.price.$gte = value.minPrice;
+      if (value.maxPrice) filter.price.$lte = value.maxPrice;
+    }
+    if (value.amenities) {
+      const amenitiesArray = Array.isArray(value.amenities) ? value.amenities : [value.amenities];
+      filter.amenities = { $all: amenitiesArray };
+    }
+
+    const skip = (value.page - 1) * value.limit;
+
+    const [properties, total] = await Promise.all([
+      Property.find(filter).sort({ createdAt: -1 }).skip(skip).limit(value.limit),
+      Property.countDocuments(filter),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: properties,
+      pagination: { page: value.page, limit: value.limit, total, pages: Math.ceil(total / value.limit) },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+};
+
 module.exports = {
   createProperty,
   getProperties,
@@ -127,4 +173,5 @@ module.exports = {
   updateProperty,
   deleteProperty,
   updatePropertyStatus,
+  searchProperties,
 };

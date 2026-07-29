@@ -26,4 +26,17 @@ const updatePropertySchema = Joi.object({
   images: Joi.array().items(Joi.string().uri()).min(1).max(20),
 });
 
-module.exports = { createPropertySchema, updatePropertySchema };
+const searchPropertySchema = Joi.object({
+  keyword: Joi.string().allow(''),
+  type: Joi.string().valid('apartment', 'villa', 'plot', 'commercial'),
+  minPrice: Joi.number().positive(),
+  maxPrice: Joi.number().positive(),
+  amenities: Joi.alternatives().try(
+    Joi.array().items(Joi.string()),
+    Joi.string()
+  ),
+  page: Joi.number().integer().min(1).default(1),
+  limit: Joi.number().integer().min(1).max(50).default(20),
+});
+
+module.exports = { createPropertySchema, updatePropertySchema, searchPropertySchema };
