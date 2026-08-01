@@ -166,6 +166,19 @@ const searchProperties = async (req, res) => {
   }
 };
 
+const getAllPropertiesAdmin = async (req, res) => {
+  try {
+    const filter = {};
+    if (req.query.status) {
+      filter.status = req.query.status;
+    }
+    const properties = await Property.find(filter).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: properties });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Server error' });
+  }
+};
+
 module.exports = {
   createProperty,
   getProperties,
@@ -174,4 +187,5 @@ module.exports = {
   deleteProperty,
   updatePropertyStatus,
   searchProperties,
+  getAllPropertiesAdmin,
 };
