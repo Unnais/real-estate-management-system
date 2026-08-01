@@ -7,6 +7,7 @@ import Properties from './pages/Properties';
 import PropertyDetails from './pages/PropertyDetails';
 import AdminApprovals from './pages/AdminApprovals';
 import MyBookings from './pages/MyBookings';
+import CreateListing from './pages/CreateListing';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -40,6 +41,14 @@ function App() {
           element={
             <ProtectedRoute>
               <MyBookings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/properties/create"
+          element={
+            <ProtectedRoute>
+              <CreateListing />
             </ProtectedRoute>
           }
         />

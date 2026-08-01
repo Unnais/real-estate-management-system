@@ -26,6 +26,14 @@ function Navbar() {
 
           {accessToken ? (
             <>
+              {(user?.role === 'owner' || user?.role === 'agent') && (
+                <Link
+                  to="/properties/create"
+                  className="text-slate-300 hover:text-white transition"
+                >
+                  Create Listing
+                </Link>
+              )}
               <Link to="/bookings" className="text-slate-300 hover:text-white transition">
                 My Bookings
               </Link>
