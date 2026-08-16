@@ -1,0 +1,261 @@
+{
+    "info": {
+      "name": "Real Estate Management System API",
+      "description": "Complete API collection for the Real Estate Management System backend.",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+      { "key": "baseUrl", "value": "http://localhost:5000/api" },
+      { "key": "accessToken", "value": "" },
+      { "key": "propertyId", "value": "" },
+      { "key": "bookingId", "value": "" },
+      { "key": "leadId", "value": "" }
+    ],
+    "item": [
+      {
+        "name": "Auth",
+        "item": [
+          {
+            "name": "Register",
+            "request": {
+              "method": "POST",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Test1234!\",\n  \"role\": \"customer\"\n}"
+              },
+              "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+            }
+          },
+          {
+            "name": "Login",
+            "request": {
+              "method": "POST",
+              "header": [{ "key": "Content-Type", "value": "application/json" }],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Test1234!\"\n}"
+              },
+              "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+            }
+          },
+          {
+            "name": "Get Me",
+            "request": {
+              "method": "GET",
+              "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+              "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Properties",
+        "item": [
+          {
+            "name": "Get All Approved Properties",
+            "request": {
+              "method": "GET",
+              "url": { "raw": "{{baseUrl}}/properties", "host": ["{{baseUrl}}"], "path": ["properties"] }
+            }
+          },
+          {
+            "name": "Search Properties",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "{{baseUrl}}/properties/search?type=apartment&minPrice=1000000&maxPrice=10000000",
+                "host": ["{{baseUrl}}"],
+                "path": ["properties", "search"],
+                "query": [
+                  { "key": "type", "value": "apartment" },
+                  { "key": "minPrice", "value": "1000000" },
+                  { "key": "maxPrice", "value": "10000000" }
+                ]
+              }
+            }
+          },
+          {
+            "name": "Get Property By Id",
+            "request": {
+              "method": "GET",
+              "url": { "raw": "{{baseUrl}}/properties/{{propertyId}}", "host": ["{{baseUrl}}"], "path": ["properties", "{{propertyId}}"] }
+            }
+          },
+          {
+            "name": "Create Property",
+            "request": {
+              "method": "POST",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" },
+                { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"title\": \"3BHK Apartment in Gachibowli\",\n  \"type\": \"apartment\",\n  \"price\": 8500000,\n  \"areaSqft\": 1450,\n  \"location\": { \"lat\": 17.44, \"lng\": 78.34 },\n  \"amenities\": [\"parking\", \"gym\"],\n  \"images\": [\"https://example.com/image1.jpg\"]\n}"
+              },
+              "url": { "raw": "{{baseUrl}}/properties", "host": ["{{baseUrl}}"], "path": ["properties"] }
+            }
+          },
+          {
+            "name": "Update Property",
+            "request": {
+              "method": "PUT",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" },
+                { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              ],
+              "body": { "mode": "raw", "raw": "{\n  \"price\": 9000000\n}" },
+              "url": { "raw": "{{baseUrl}}/properties/{{propertyId}}", "host": ["{{baseUrl}}"], "path": ["properties", "{{propertyId}}"] }
+            }
+          },
+          {
+            "name": "Delete Property",
+            "request": {
+              "method": "DELETE",
+              "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+              "url": { "raw": "{{baseUrl}}/properties/{{propertyId}}", "host": ["{{baseUrl}}"], "path": ["properties", "{{propertyId}}"] }
+            }
+          },
+          {
+            "name": "Update Property Status (Admin)",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" },
+                { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              ],
+              "body": { "mode": "raw", "raw": "{\n  \"status\": \"approved\"\n}" },
+              "url": { "raw": "{{baseUrl}}/properties/{{propertyId}}/status", "host": ["{{baseUrl}}"], "path": ["properties", "{{propertyId}}", "status"] }
+            }
+          },
+          {
+            "name": "Get All Properties (Admin)",
+            "request": {
+              "method": "GET",
+              "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+              "url": { "raw": "{{baseUrl}}/properties/admin/all?status=pending", "host": ["{{baseUrl}}"], "path": ["properties", "admin", "all"], "query": [{ "key": "status", "value": "pending" }] }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Bookings",
+        "item": [
+          {
+            "name": "Create Booking",
+            "request": {
+              "method": "POST",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" },
+                { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"propertyId\": \"{{propertyId}}\",\n  \"scheduledAt\": \"2026-12-01T10:00:00Z\",\n  \"notes\": \"Interested in viewing\"\n}"
+              },
+              "url": { "raw": "{{baseUrl}}/bookings", "host": ["{{baseUrl}}"], "path": ["bookings"] }
+            }
+          },
+          {
+            "name": "Get My Bookings",
+            "request": {
+              "method": "GET",
+              "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+              "url": { "raw": "{{baseUrl}}/bookings/user/me", "host": ["{{baseUrl}}"], "path": ["bookings", "user", "me"] }
+            }
+          },
+          {
+            "name": "Get Booking By Id",
+            "request": {
+              "method": "GET",
+              "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+              "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}"] }
+            }
+          },
+          {
+            "name": "Update Booking Status",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" },
+                { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              ],
+              "body": { "mode": "raw", "raw": "{\n  \"status\": \"confirmed\"\n}" },
+              "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}/status", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}", "status"] }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Leads",
+        "item": [
+          {
+            "name": "Create Lead",
+            "request": {
+              "method": "POST",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" },
+                { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              ],
+              "body": { "mode": "raw", "raw": "{\n  \"propertyId\": \"{{propertyId}}\",\n  \"source\": \"visit-request\"\n}" },
+              "url": { "raw": "{{baseUrl}}/leads", "host": ["{{baseUrl}}"], "path": ["leads"] }
+            }
+          },
+          {
+            "name": "Get Leads",
+            "request": {
+              "method": "GET",
+              "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+              "url": { "raw": "{{baseUrl}}/leads", "host": ["{{baseUrl}}"], "path": ["leads"] }
+            }
+          },
+          {
+            "name": "Update Lead Status",
+            "request": {
+              "method": "PATCH",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" },
+                { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              ],
+              "body": { "mode": "raw", "raw": "{\n  \"status\": \"contacted\"\n}" },
+              "url": { "raw": "{{baseUrl}}/leads/{{leadId}}/status", "host": ["{{baseUrl}}"], "path": ["leads", "{{leadId}}", "status"] }
+            }
+          },
+          {
+            "name": "Lead Analytics",
+            "request": {
+              "method": "GET",
+              "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+              "url": { "raw": "{{baseUrl}}/leads/analytics", "host": ["{{baseUrl}}"], "path": ["leads", "analytics"] }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Payments",
+        "item": [
+          {
+            "name": "Initiate Payment",
+            "request": {
+              "method": "POST",
+              "header": [
+                { "key": "Content-Type", "value": "application/json" },
+                { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              ],
+              "body": { "mode": "raw", "raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"amount\": 5000\n}" },
+              "url": { "raw": "{{baseUrl}}/payments/initiate", "host": ["{{baseUrl}}"], "path": ["payments", "initiate"] }
+            }
+          },
+          {
+            "name": "Payment History",
+            "request": {
+              "method": "GET",
+              "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+              "url": { "raw": "{{baseUrl}}/payments/history", "host": ["{{baseUrl}}"], "path": ["payments", "history"] }
+            }
+          }
+        ]
+      }
+    ]
+  }
